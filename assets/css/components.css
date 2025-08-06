@@ -1,0 +1,707 @@
+/* Основные переменные - ПЕРЕНЕСЕНЫ В main.css для централизации */
+
+/* Логотип */
+.logo-container {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    width: 100%;
+    height: 100%;
+}
+
+/* Кнопки */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 28px; /* Уменьшен паддинг */
+    border-radius: var(--radius-md);
+    font-size: 0.95rem; /* Чуть уменьшен шрифт */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal) ease;
+    box-shadow: var(--shadow-sm);
+    min-width: 180px; /* Уменьшена мин. ширина */
+    position: relative;
+    overflow: hidden;
+    margin: 6px 0; /* Уменьшен отступ */
+    text-align: center;
+    line-height: 1;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn.pulse {
+    animation: pulse 2s infinite;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border);
+    box-shadow: var(--shadow-md);
+}
+
+/* Формы */
+.form-container {
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center; /* Центрируем содержимое по вертикали */
+    min-height: 100%; /* Занимаем всю доступную высоту */
+}
+
+.form-step {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+    padding: 0;
+    flex-grow: 1;
+    justify-content: center; /* Центрируем содержимое по вертикали */
+    flex-direction: column; /* Для вертикального расположения элементов */
+    align-items: center;
+    min-height: 100%; /* Занимаем всю доступную высоту */
+}
+
+.form-step.active {
+    display: flex;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px; /* Уменьшен паддинг */
+    margin: 10px 0; /* Уменьшен отступ */
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem; /* Чуть уменьшен шрифт */
+    transition: all var(--transition-normal) ease;
+    background-color: var(--surface);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    text-align: center;
+}
+
+.input-field:focus {
+    background-color: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15), inset 0 1px 3px rgba(0,0,0,0.06);
+    outline: none;
+}
+
+.input-field::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* Теги выбора (пол, ищу, интересы) */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Уменьшен зазор */
+    justify-content: center;
+    margin: 15px 0; /* Уменьшен отступ */
+    width: 100%;
+}
+
+.tag {
+    background: var(--surface);
+    padding: 12px 20px; /* Уменьшен паддинг */
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal) ease;
+    font-size: 0.9rem; /* Чуть уменьшен шрифт */
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Уменьшен отступ */
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    text-align: center;
+    flex-grow: 1;
+    justify-content: center;
+    min-width: 100px; /* Уменьшена мин. ширина */
+}
+
+.tag:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.tag.selected {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+/* Палитра цветов */
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Уменьшен зазор */
+    justify-content: center;
+    margin: 15px 0; /* Уменьшен отступ */
+    width: 100%;
+}
+
+.color-option {
+    width: 40px; /* Уменьшен размер */
+    height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+    position: relative;
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-sm);
+}
+
+.color-option.selected {
+    border-color: var(--text-primary);
+    transform: scale(1.15);
+    box-shadow: var(--shadow-md);
+}
+
+.color-option.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem; /* Чуть уменьшен размер галочки */
+    text-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+
+.color-custom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px; /* Уменьшен отступ */
+}
+
+.color-custom input[type="color"] {
+    width: 60px; /* Уменьшен размер */
+    height: 60px;
+    border: 3px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal) ease;
+}
+
+.color-custom input[type="color"]:hover {
+    transform: scale(1.08);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.color-custom label {
+    margin-top: 8px; /* Уменьшен отступ */
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Аватар */
+.avatar-upload {
+    margin: 15px 0; /* Уменьшен отступ */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.avatar-preview {
+    width: 120px; /* Уменьшен размер */
+    height: 120px;
+    border-radius: var(--radius-lg);
+    margin: 12px auto; /* Уменьшен отступ */
+    background-color: var(--surface);
+    background-size: cover;
+    background-position: center;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid var(--border);
+}
+
+.avatar-placeholder {
+    font-size: 2.5rem; /* Уменьшен размер */
+    color: var(--primary);
+    opacity: 0.5;
+}
+
+/* Навигация внутри формы (кнопки Далее/Назад) */
+.navigation {
+    display: flex;
+    gap: 10px; /* Уменьшен зазор */
+    justify-content: center;
+    margin-top: 30px; /* Уменьшен отступ */
+    width: 100%;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+/* Профиль */
+.profile-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 25px; /* Уменьшен паддинг */
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-normal) ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Уменьшен зазор между секциями */
+    border: 1px solid var(--border);
+    flex-grow: 1;
+    overflow-y: auto; /* Добавляем прокрутку, если контент не помещается */
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 120px); /* Ограничиваем высоту для мобильных */
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Уменьшен зазор */
+    margin-bottom: 15px; /* Уменьшен отступ */
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.profile-avatar {
+    width: 120px; /* Уменьшен размер */
+    height: 120px;
+    border-radius: var(--radius-lg);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    transition: all var(--transition-normal) ease;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+}
+
+.profile-info {
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.profile-name {
+    font-size: 2rem; /* Уменьшен размер */
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px; /* Уменьшен отступ */
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.profile-meta {
+    color: var(--text-secondary);
+    font-size: 1rem; /* Чуть уменьшен размер */
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px; /* Уменьшен зазор */
+    line-height: 1.4;
+}
+
+.profile-meta span:not(:last-child)::after {
+    content: ' •';
+    margin-left: 4px;
+}
+
+.profile-section {
+    margin-bottom: 20px; /* Уменьшен отступ */
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.profile-section .section-title {
+    font-size: 1.3rem; /* Уменьшен размер */
+    color: var(--primary);
+    margin-bottom: 12px; /* Уменьшен отступ */
+    font-weight: 800;
+    text-align: left;
+}
+
+.profile-description {
+    background: var(--surface);
+    padding: 15px; /* Уменьшен паддинг */
+    border-radius: var(--radius-md);
+    font-size: 0.95rem; /* Чуть уменьшен размер */
+    line-height: 1.6; /* Уменьшена межстрочная высота */
+    color: var(--text-primary);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    text-align: left;
+    border: 1px solid var(--border);
+    word-break: break-word;
+}
+
+.profile-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Уменьшен зазор */
+    justify-content: center;
+}
+
+.interest-tag {
+    background: color-mix(in srgb, var(--primary) 15%, white);
+    color: var(--primary);
+    padding: 8px 14px; /* Уменьшен паддинг */
+    border-radius: 20px; /* Чуть меньше скругление */
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    transition: all var(--transition-normal) ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.no-interests {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px; /* Уменьшен отступ */
+    gap: 10px; /* Зазор между кнопками */
+    flex-shrink: 0;
+}
+
+.btn-edit {
+    background: var(--primary) !important;
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Уменьшен зазор */
+    transition: all var(--transition-normal) ease;
+}
+
+.btn-edit:hover {
+    background: var(--primary-dark) !important;
+    transform: translateY(-3px);
+}
+
+/* Фотографии */
+.profile-photos {
+    margin-bottom: 20px; /* Уменьшен отступ */
+    flex-shrink: 0;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* Уменьшен зазор */
+    margin-top: 10px; /* Уменьшен отступ */
+}
+
+.photo-preview {
+    background-size: cover;
+    background-position: center;
+    height: 90px; /* Уменьшена высота */
+    border-radius: var(--radius-md);
+    position: relative;
+    transition: all var(--transition-normal) ease;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+
+.photo-preview:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.photo-preview.main-avatar {
+    border: 3px solid var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.set-avatar-btn {
+    position: absolute;
+    bottom: 6px; /* Уменьшен отступ */
+    left: 6px;
+    background: rgba(var(--primary-rgb), 0.9);
+    color: white;
+    border: none;
+    border-radius: 5px; /* Чуть меньше скругление */
+    padding: 3px 6px; /* Уменьшен паддинг */
+    font-size: 0.7rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast) ease;
+    backdrop-filter: blur(2px);
+}
+
+.photo-preview:hover .set-avatar-btn {
+    opacity: 1;
+}
+
+.delete-photo {
+    position: absolute;
+    top: 6px; /* Уменьшен отступ */
+    right: 6px;
+    background: rgba(var(--error-rgb), 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px; /* Уменьшен размер */
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast) ease;
+    font-size: 0.9rem;
+    font-weight: bold;
+    backdrop-filter: blur(2px);
+}
+
+.photo-preview:hover .delete-photo {
+    opacity: 1;
+}
+
+.no-photos {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+    .btn {
+        padding: 12px 20px;
+        min-width: 140px;
+        width: 100%;
+        font-size: 0.9rem;
+    }
+    
+    .navigation {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .profile-card {
+        padding: 20px;
+        gap: 15px;
+        max-height: calc(100vh - 100px); /* Еще уменьшаем высоту для очень маленьких экранов */
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .profile-name {
+        font-size: 1.6rem;
+    }
+    
+    .profile-meta {
+        font-size: 0.9rem;
+    }
+    
+    .profile-section .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .profile-description {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .interest-tag {
+        padding: 7px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .color-option {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .color-custom input[type="color"] {
+        width: 50px;
+        height: 50px;
+    }
+
+    .photos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .photo-preview {
+        height: 80px;
+    }
+
+    .input-field {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .tags-container .tag {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        min-width: 90px;
+    }
+}   
+
+/* Стили для раздела "Ищу" */
+.looking-for-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Уменьшена мин. ширина */
+    gap: 8px; /* Уменьшен зазор */
+    width: 100%;
+    justify-content: center;
+}
+
+.looking-for-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px; /* Уменьшен зазор */
+    padding: 12px; /* Уменьшен паддинг */
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast) ease;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.looking-for-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.looking-for-emoji {
+    font-size: 1.6rem; /* Уменьшен размер эмодзи */
+}
+
+.looking-for-text {
+    font-size: 0.9rem; /* Уменьшен шрифт */
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Стили для раздела "Интересы" */
+.interests-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); /* Уменьшена мин. ширина */
+    gap: 8px; /* Уменьшен зазор */
+    width: 100%;
+    justify-content: center;
+}
+
+.interest-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px; /* Уменьшен паддинг */
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast) ease;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.interest-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.interest-emoji {
+    font-size: 1.8rem; /* Уменьшен размер эмодзи */
+    margin-bottom: 4px; /* Уменьшен отступ */
+}
+
+.interest-text {
+    font-size: 0.85rem; /* Уменьшен шрифт */
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Общие стили для пустых разделов */
+.no-data {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 15px; /* Уменьшен паддинг */
+    text-align: center;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px dashed var(--border);
+    font-size: 0.9rem; /* Уменьшен шрифт */
+}
+
+/* Адаптация для очень маленьких мобильных */
+@media (max-width: 320px) {
+    .looking-for-container,
+    .interests-container {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Еще меньше мин. ширина */
+    }
+    
+    .looking-for-item,
+    .interest-item {
+        padding: 10px;
+    }
+    .looking-for-emoji {
+        font-size: 1.4rem;
+    }
+    .interest-emoji {
+        font-size: 1.6rem;
+    }
+    .profile-card {
+        padding: 15px;
+    }
+}
