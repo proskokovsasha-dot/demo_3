@@ -107,6 +107,64 @@
             overflow: visible;
         }
 
+        /* Стили для модального окна геолокации */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         /* Адаптация для мобильных */
         @media (max-width: 480px) {
             .app-container {
@@ -121,6 +179,15 @@
             }
             .loading-text.subtitle {
                 font-size: 1rem;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-content h3 {
+                font-size: 1.3rem;
+            }
+            .modal-content p {
+                font-size: 0.9rem;
             }
         }
         @media (max-width: 360px) {
@@ -279,6 +346,18 @@
             <h2 class="section-title">Настройки</h2>
             <p class="section-description">Здесь будут находиться настройки приложения.</p>
             <button class="btn btn-secondary" id="clearDataBtn">Очистить данные профиля</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для геолокации -->
+    <div class="modal-overlay" id="locationModal">
+        <div class="modal-content">
+            <h3>Разрешить доступ к геолокации?</h3>
+            <p>Это поможет нам показывать вам людей поблизости и улучшить подбор анкет.</p>
+            <div class="modal-actions">
+                <button class="btn" id="modalAllowLocationBtn">🌍 Разрешить доступ</button>
+                <button class="btn btn-secondary" id="modalSkipLocationBtn">Пропустить</button>
+            </div>
         </div>
     </div>
 

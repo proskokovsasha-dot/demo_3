@@ -147,16 +147,7 @@ class FormHandler {
             <input type="text" class="input-field" id="userCity" 
                    placeholder="Где вы живете?" 
                    value="${this.app.state.userData.city || ''}" required>
-            <p class="section-description" style="margin-top: 20px;">Разрешить доступ к геолокации для более точного поиска?</p>
-            <div class="tags-container">
-                <div class="tag" id="allowLocationBtn">
-                    🌍 Разрешить доступ
-                </div>
-                <div class="tag" id="skipLocationBtn">
-                    Пропустить
-                </div>
-            </div>
-            <div id="locationStatus" style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9rem;"></div>
+            <!-- Кнопки для геолокации удалены, теперь будет модальное окно -->
         `;
     }
 
@@ -261,7 +252,7 @@ class FormHandler {
         this.setupNavigationHandlers();
         this.setupGenderHandlers();
         this.setupZodiacHandler();
-        this.setupLocationHandlers();
+        // this.setupLocationHandlers(); // Удаляем этот вызов, так как геолокация теперь в модальном окне
         this.setupLookingForHandlers();
         this.setupInterestsHandlers();
         this.setupPreferenceHandlers();
@@ -299,42 +290,42 @@ class FormHandler {
         }
     }
 
-    setupLocationHandlers() {
-        const allowBtn = document.getElementById('allowLocationBtn');
-        const skipBtn = document.getElementById('skipLocationBtn');
-        const status = document.getElementById('locationStatus');
+    // setupLocationHandlers() { // Этот метод больше не нужен здесь
+    //     const allowBtn = document.getElementById('allowLocationBtn');
+    //     const skipBtn = document.getElementById('skipLocationBtn');
+    //     const status = document.getElementById('locationStatus');
 
-        if (allowBtn && skipBtn) {
-            allowBtn.addEventListener('click', () => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            this.app.state.userData.location = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude
-                            };
-                            status.textContent = '📍 Местоположение определено!';
-                            allowBtn.classList.add('selected');
-                            skipBtn.classList.remove('selected');
-                        },
-                        (error) => {
-                            status.textContent = 'Не удалось определить местоположение';
-                            console.error(error);
-                        }
-                    );
-                } else {
-                    status.textContent = 'Геолокация не поддерживается вашим браузером';
-                }
-            });
+    //     if (allowBtn && skipBtn) {
+    //         allowBtn.addEventListener('click', () => {
+    //             if (navigator.geolocation) {
+    //                 navigator.geolocation.getCurrentPosition(
+    //                     (position) => {
+    //                         this.app.state.userData.location = {
+    //                             lat: position.coords.latitude,
+    //                             lng: position.coords.longitude
+    //                         };
+    //                         status.textContent = '📍 Местоположение определено!';
+    //                         allowBtn.classList.add('selected');
+    //                         skipBtn.classList.remove('selected');
+    //                     },
+    //                     (error) => {
+    //                         status.textContent = 'Не удалось определить местоположение';
+    //                         console.error(error);
+    //                     }
+    //                 );
+    //             } else {
+    //                 status.textContent = 'Геолокация не поддерживается вашим браузером';
+    //             }
+    //         });
 
-            skipBtn.addEventListener('click', () => {
-                this.app.state.userData.location = { lat: null, lng: null };
-                status.textContent = 'Вы можете указать местоположение позже';
-                skipBtn.classList.add('selected');
-                allowBtn.classList.remove('selected');
-            });
-        }
-    }
+    //         skipBtn.addEventListener('click', () => {
+    //             this.app.state.userData.location = { lat: null, lng: null };
+    //             status.textContent = 'Вы можете указать местоположение позже';
+    //             skipBtn.classList.add('selected');
+    //             allowBtn.classList.remove('selected');
+    //         });
+    //     }
+    // }
 
     setupLookingForHandlers() {
         document.querySelectorAll('[data-looking-for]').forEach(tag => {
@@ -513,7 +504,15 @@ class FormHandler {
     }
 
     handleNextStep() {
-        if (this.app.state.currentStep === this.app.state.totalSteps) {
+        if (this.app.state.currentStep === 5) { // Если это шаг "Город"
+            if (!document.getElementById('userCity').value.trim()) {
+                alert('Пожалуйста, укажите ваш город.');
+                return;
+            }
+            this.saveStepData(); // Сохраняем город перед показом модального окна
+            this.app.showLocationModal(); // Показываем модальное окно
+            // Переход к следующему шагу будет выполнен из app.js после обработки геолокации
+        } else if (this.app.state.currentStep === this.app.state.totalSteps) {
             this.saveProfile();
         } else {
             this.nextStep();
@@ -568,7 +567,7 @@ class FormHandler {
                     return false;
                 }
                 return true;
-            case 5:
+            case 5: // Валидация города остается, но модальное окно вызывается в handleNextStep
                 if (!document.getElementById('userCity').value.trim()) {
                     alert('Пожалуйста, укажите ваш город.');
                     return false;
@@ -610,6 +609,7 @@ class FormHandler {
                 break;
             case 5:
                 this.app.state.userData.city = document.getElementById('userCity').value.trim();
+                // Геолокация обрабатывается в app.js после модального окна
                 break;
             case 9:
                 this.app.state.userData.description = document.getElementById('userDescription').value.trim();

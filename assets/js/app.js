@@ -115,13 +115,15 @@ class DatingApp {
 
     initElements() {
         this.elements = {
-            // mainScreen: document.getElementById('mainScreen'), // Этот элемент не существует в HTML
             registrationForm: document.getElementById('registrationForm'),
             profileView: document.getElementById('profileView'),
             discoveryScreen: document.getElementById('discoveryScreen'),
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
-            navButtons: document.querySelectorAll('.nav-btn')
+            navButtons: document.querySelectorAll('.nav-btn'),
+            locationModal: document.getElementById('locationModal'), // Добавляем модальное окно
+            modalAllowLocationBtn: document.getElementById('modalAllowLocationBtn'),
+            modalSkipLocationBtn: document.getElementById('modalSkipLocationBtn')
         };
     }
 
@@ -145,6 +147,14 @@ class DatingApp {
                     this.clearAllData();
                 }
             });
+        }
+
+        // Обработчики для кнопок модального окна геолокации
+        if (this.elements.modalAllowLocationBtn) {
+            this.elements.modalAllowLocationBtn.addEventListener('click', () => this.handleLocationPermission(true));
+        }
+        if (this.elements.modalSkipLocationBtn) {
+            this.elements.modalSkipLocationBtn.addEventListener('click', () => this.handleLocationPermission(false));
         }
     }
 
@@ -246,6 +256,48 @@ class DatingApp {
         this.state.currentScreen = screenName;
     }
 
+    // Методы для работы с модальным окном геолокации
+    showLocationModal() {
+        this.elements.locationModal.classList.add('active');
+    }
+
+    hideLocationModal() {
+        this.elements.locationModal.classList.remove('active');
+    }
+
+    handleLocationPermission(allow) {
+        this.hideLocationModal();
+        if (allow) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        this.state.userData.location = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        alert('Местоположение определено!');
+                        // После определения местоположения, можно перейти к следующему шагу формы
+                        this.formHandler.nextStep(); 
+                    },
+                    (error) => {
+                        alert('Не удалось определить местоположение. Вы можете указать его позже.');
+                        console.error(error);
+                        this.state.userData.location = { lat: null, lng: null }; // Сбрасываем, если ошибка
+                        this.formHandler.nextStep(); // Все равно переходим к следующему шагу
+                    }
+                );
+            } else {
+                alert('Геолокация не поддерживается вашим браузером. Вы можете указать местоположение позже.');
+                this.state.userData.location = { lat: null, lng: null }; // Сбрасываем
+                this.formHandler.nextStep(); // Все равно переходим к следующему шагу
+            }
+        } else {
+            this.state.userData.location = { lat: null, lng: null }; // Пропускаем
+            alert('Доступ к геолокации пропущен.');
+            this.formHandler.nextStep(); // Переходим к следующему шагу
+        }
+    }
+
     calculateDistance(lat1, lon1, lat2, lon2) {
         if (!lat1 || !lon1 || !lat2 || !lon2) return null;
         
@@ -268,3 +320,4 @@ class DatingApp {
 document.addEventListener('DOMContentLoaded', () => {
     new DatingApp();
 });
+    
