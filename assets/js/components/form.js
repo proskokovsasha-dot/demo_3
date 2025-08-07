@@ -55,7 +55,14 @@ class FormHandler {
         `;
         this.setupFormHandlers();
         this.focusCurrentField();
-        this.initColorSelection();
+        // Инициализация выбора цвета теперь происходит только на соответствующем шаге
+        if (this.app.state.currentStep === 9) {
+            this.initColorSelection();
+        }
+        // Рендеринг фото также только на соответствующем шаге
+        if (this.app.state.currentStep === 10) {
+            this.renderPhotos();
+        }
     }
 
     generateSteps() {
@@ -82,7 +89,9 @@ class FormHandler {
             6: this.getLookingForStep(),
             7: this.getInterestsStep(),
             8: this.getPreferenceStep(),
-            9: this.getColorAndPhotosStep()
+            9: this.getProfileColorStep(), // Новый шаг для цвета профиля
+            10: this.getPhotosStep(),      // Новый шаг для фото
+            11: this.getAboutMeStep()      // Новый шаг для "О себе"
         };
         return stepContents[step] || '';
     }
@@ -147,7 +156,6 @@ class FormHandler {
             <input type="text" class="input-field" id="userCity" 
                    placeholder="Где вы живете?" 
                    value="${this.app.state.userData.city || ''}" required>
-            <!-- Кнопки для геолокации удалены, теперь будет модальное окно -->
         `;
     }
 
@@ -196,7 +204,7 @@ class FormHandler {
         `;
     }
 
-    getColorAndPhotosStep() {
+    getProfileColorStep() {
         return `
             <h2 class="section-title">Цвет профиля</h2>
             <p class="section-description">Выберите основной цвет для вашего профиля.</p>
@@ -211,8 +219,12 @@ class FormHandler {
                 <input type="color" id="customColor" value="${this.app.state.userData.profileColor}">
                 <label>Или выберите свой цвет</label>
             </div>
+        `;
+    }
 
-            <h2 class="section-title" style="margin-top: 40px;">Ваши фото</h2>
+    getPhotosStep() {
+        return `
+            <h2 class="section-title">Ваши фото</h2>
             <p class="section-description">Добавьте до ${this.app.config.maxPhotos} фото, чтобы сделать профиль ярче.</p>
             <div class="avatar-upload">
                 <label class="btn btn-secondary">
@@ -229,8 +241,12 @@ class FormHandler {
                     </div>
                 `).join('')}
             </div>
+        `;
+    }
 
-            <h2 class="section-title" style="margin-top: 40px;">О себе</h2>
+    getAboutMeStep() {
+        return `
+            <h2 class="section-title">О себе</h2>
             <p class="section-description">Расскажите немного о себе, чтобы другие могли узнать вас лучше.</p>
             <textarea class="input-field" id="userDescription" 
                       placeholder="Я люблю путешествия, книги и..." rows="4">${this.app.state.userData.description || ''}</textarea>
@@ -252,7 +268,6 @@ class FormHandler {
         this.setupNavigationHandlers();
         this.setupGenderHandlers();
         this.setupZodiacHandler();
-        // this.setupLocationHandlers(); // Удаляем этот вызов, так как геолокация теперь в модальном окне
         this.setupLookingForHandlers();
         this.setupInterestsHandlers();
         this.setupPreferenceHandlers();
@@ -289,43 +304,6 @@ class FormHandler {
             });
         }
     }
-
-    // setupLocationHandlers() { // Этот метод больше не нужен здесь
-    //     const allowBtn = document.getElementById('allowLocationBtn');
-    //     const skipBtn = document.getElementById('skipLocationBtn');
-    //     const status = document.getElementById('locationStatus');
-
-    //     if (allowBtn && skipBtn) {
-    //         allowBtn.addEventListener('click', () => {
-    //             if (navigator.geolocation) {
-    //                 navigator.geolocation.getCurrentPosition(
-    //                     (position) => {
-    //                         this.app.state.userData.location = {
-    //                             lat: position.coords.latitude,
-    //                             lng: position.coords.longitude
-    //                         };
-    //                         status.textContent = '📍 Местоположение определено!';
-    //                         allowBtn.classList.add('selected');
-    //                         skipBtn.classList.remove('selected');
-    //                     },
-    //                     (error) => {
-    //                         status.textContent = 'Не удалось определить местоположение';
-    //                         console.error(error);
-    //                     }
-    //                 );
-    //             } else {
-    //                 status.textContent = 'Геолокация не поддерживается вашим браузером';
-    //             }
-    //         });
-
-    //         skipBtn.addEventListener('click', () => {
-    //             this.app.state.userData.location = { lat: null, lng: null };
-    //             status.textContent = 'Вы можете указать местоположение позже';
-    //             skipBtn.classList.add('selected');
-    //             allowBtn.classList.remove('selected');
-    //         });
-    //     }
-    // }
 
     setupLookingForHandlers() {
         document.querySelectorAll('[data-looking-for]').forEach(tag => {
@@ -376,68 +354,78 @@ class FormHandler {
     }
 
     setupColorHandlers() {
-        document.querySelectorAll('[data-color]').forEach(color => {
-            color.addEventListener('click', (e) => {
-                const selectedColor = e.currentTarget.dataset.color;
-                this.updateColorSelection(selectedColor);
+        // Эти обработчики должны быть привязаны только когда шаг с цветом активен
+        if (this.app.state.currentStep === 9) {
+            document.querySelectorAll('[data-color]').forEach(color => {
+                color.addEventListener('click', (e) => {
+                    const selectedColor = e.currentTarget.dataset.color;
+                    this.updateColorSelection(selectedColor);
+                });
             });
-        });
 
-        const customColor = document.getElementById('customColor');
-        if (customColor) {
-            customColor.addEventListener('input', (e) => {
-                const selectedColor = e.target.value;
-                this.updateColorSelection(selectedColor);
-            });
+            const customColor = document.getElementById('customColor');
+            if (customColor) {
+                customColor.addEventListener('input', (e) => {
+                    const selectedColor = e.target.value;
+                    this.updateColorSelection(selectedColor);
+                });
+            }
         }
     }
 
     setupPhotoHandlers() {
-        const upload = document.getElementById('photoUpload');
-        if (upload) {
-            upload.addEventListener('change', (e) => {
-                const files = Array.from(e.target.files);
-                if (files.length + this.app.state.userData.photos.length > this.app.config.maxPhotos) {
-                    alert(`Можно загрузить не более ${this.app.config.maxPhotos} фото`);
-                    return;
-                }
+        // Эти обработчики должны быть привязаны только когда шаг с фото активен
+        if (this.app.state.currentStep === 10) {
+            const upload = document.getElementById('photoUpload');
+            if (upload) {
+                upload.addEventListener('change', (e) => {
+                    const files = Array.from(e.target.files);
+                    if (files.length + this.app.state.userData.photos.length > this.app.config.maxPhotos) {
+                        alert(`Можно загрузить не более ${this.app.config.maxPhotos} фото`);
+                        return;
+                    }
 
-                files.forEach(file => {
-                    if (file.type.match('image.*')) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.app.state.userData.photos.push(e.target.result);
-                            if (!this.app.state.userData.avatar) {
-                                this.app.state.userData.avatar = e.target.result;
-                            }
-                            this.renderPhotos();
-                        };
-                        reader.readAsDataURL(file);
+                    files.forEach(file => {
+                        if (file.type.match('image.*')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.app.state.userData.photos.push(e.target.result);
+                                if (!this.app.state.userData.avatar) {
+                                    this.app.state.userData.avatar = e.target.result;
+                                }
+                                this.renderPhotos();
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                });
+            }
+
+            // Делегирование событий для кнопок внутри photosContainer
+            const photosContainer = document.getElementById('photosContainer');
+            if (photosContainer) {
+                photosContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-photo')) {
+                        const index = parseInt(e.target.dataset.index);
+                        const photoToDelete = this.app.state.userData.photos[index];
+                        
+                        if (this.app.state.userData.avatar === photoToDelete) {
+                            this.app.state.userData.avatar = this.app.state.userData.photos.length > 1 ? 
+                                this.app.state.userData.photos.find((_, i) => i !== index) : null;
+                        }
+                        
+                        this.app.state.userData.photos.splice(index, 1);
+                        this.renderPhotos();
+                    }
+
+                    if (e.target.classList.contains('set-avatar-btn')) {
+                        const index = parseInt(e.target.dataset.index);
+                        this.app.state.userData.avatar = this.app.state.userData.photos[index];
+                        this.renderPhotos();
                     }
                 });
-            });
+            }
         }
-
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-photo')) {
-                const index = parseInt(e.target.dataset.index);
-                const photoToDelete = this.app.state.userData.photos[index];
-                
-                if (this.app.state.userData.avatar === photoToDelete) {
-                    this.app.state.userData.avatar = this.app.state.userData.photos.length > 1 ? 
-                        this.app.state.userData.photos.find((_, i) => i !== index) : null;
-                }
-                
-                this.app.state.userData.photos.splice(index, 1);
-                this.renderPhotos();
-            }
-
-            if (e.target.classList.contains('set-avatar-btn')) {
-                const index = parseInt(e.target.dataset.index);
-                this.app.state.userData.avatar = this.app.state.userData.photos[index];
-                this.renderPhotos();
-            }
-        });
     }
 
     setupEnterKeyHandler() {
@@ -543,6 +531,14 @@ class FormHandler {
         if (nextStepEl) {
             nextStepEl.classList.add('active');
             this.focusCurrentField();
+            // Переинициализация обработчиков для новых шагов
+            if (step === 9) { // Шаг "Цвет профиля"
+                this.setupColorHandlers();
+                this.initColorSelection();
+            } else if (step === 10) { // Шаг "Ваши фото"
+                this.setupPhotoHandlers();
+                this.renderPhotos();
+            }
         }
     }
 
@@ -591,6 +587,7 @@ class FormHandler {
                     return false;
                 }
                 return true;
+            // Для новых шагов 9, 10, 11 пока нет специфической валидации, кроме сохранения данных
             default:
                 return true;
         }
@@ -611,7 +608,7 @@ class FormHandler {
                 this.app.state.userData.city = document.getElementById('userCity').value.trim();
                 // Геолокация обрабатывается в app.js после модального окна
                 break;
-            case 9:
+            case 11: // Теперь это последний шаг с описанием
                 this.app.state.userData.description = document.getElementById('userDescription').value.trim();
                 break;
         }

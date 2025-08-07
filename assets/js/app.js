@@ -51,7 +51,7 @@ class DatingApp {
         this.state = {
             currentScreen: 'main', // Это будет изменено на 'registration' или 'profile' после проверки localStorage
             currentStep: 1,
-            totalSteps: 9,
+            totalSteps: 11, // Увеличено количество шагов: 9 (старых) + 2 (новых) = 11
             userData: {
                 name: '',
                 gender: '',
@@ -320,4 +320,3 @@ class DatingApp {
 document.addEventListener('DOMContentLoaded', () => {
     new DatingApp();
 });
-    
